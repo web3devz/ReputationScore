@@ -1,109 +1,107 @@
 module reputation_score::score {
-    use sui::event;
-    use sui::object::{Self, UID};
-    use sui::table::{Self, Table};
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
+    use one::event;
+    use one::table::{Self, Table};
 
-    public struct ScoreBoard has key, store {
-        id: UID,
+    /// Shared scoreboard — tracks reputation for all users
+    public struct ScoreBoard has key {
+        id: object::UID,
         authority: address,
         scores: Table<address, u64>,
+        total_users: u64,
     }
 
-    public struct ScoreEvent has copy, drop {
-        actor: address,
-        delta: i64,
+    public struct ScoreUpdated has copy, drop {
+        user: address,
+        amount: u64,
+        is_positive: bool,
         new_score: u64,
+        epoch: u64,
     }
 
     const E_NOT_AUTHORITY: u64 = 0;
+    const E_INVALID_DELTA: u64 = 1;
 
     fun init(ctx: &mut TxContext) {
-        let sender = tx_context::sender(ctx);
         let board = ScoreBoard {
             id: object::new(ctx),
-            authority: sender,
+            authority: ctx.sender(),
             scores: table::new(ctx),
+            total_users: 0,
         };
-        transfer::transfer(board, sender);
+        transfer::share_object(board);
     }
 
-    public entry fun grant(
+    /// Authority grants reputation to a user
+    public fun grant(
         board: &mut ScoreBoard,
-        beneficiary: address,
-        delta: u64,
-        ctx: &TxContext,
+        user: address,
+        amount: u64,
+        ctx: &mut TxContext,
     ) {
-        assert!(is_authority(board, ctx), E_NOT_AUTHORITY);
-        apply_delta(board, beneficiary, delta, true, ctx);
+        assert!(board.authority == ctx.sender(), E_NOT_AUTHORITY);
+        assert!(amount > 0, E_INVALID_DELTA);
+        apply_delta(board, user, amount, true, ctx);
     }
 
-    public entry fun slash(
+    /// Authority slashes reputation from a user
+    public fun slash(
         board: &mut ScoreBoard,
-        beneficiary: address,
-        delta: u64,
-        ctx: &TxContext,
+        user: address,
+        amount: u64,
+        ctx: &mut TxContext,
     ) {
-        assert!(is_authority(board, ctx), E_NOT_AUTHORITY);
-        apply_delta(board, beneficiary, delta, false, ctx);
+        assert!(board.authority == ctx.sender(), E_NOT_AUTHORITY);
+        assert!(amount > 0, E_INVALID_DELTA);
+        apply_delta(board, user, amount, false, ctx);
     }
 
-    public entry fun self_report(board: &mut ScoreBoard, ctx: &TxContext) {
-        let actor = tx_context::sender(ctx);
-        apply_delta(board, actor, 1, true, ctx);
+    /// Any user can self-report +1 reputation
+    public fun self_report(board: &mut ScoreBoard, ctx: &mut TxContext) {
+        apply_delta(board, ctx.sender(), 1, true, ctx);
     }
 
+    /// Get a user's current reputation score
     public fun get_score(board: &ScoreBoard, user: address): u64 {
-        if (table::contains(&board.scores, &user)) {
-            *table::borrow(&board.scores, &user)
+        if (table::contains(&board.scores, user)) {
+            *table::borrow(&board.scores, user)
         } else {
             0
         }
     }
 
+    public fun total_users(board: &ScoreBoard): u64 { board.total_users }
+
     fun apply_delta(
         board: &mut ScoreBoard,
-        actor: address,
-        delta: u64,
+        user: address,
+        amount: u64,
         positive: bool,
-        ctx: &TxContext,
+        ctx: &mut TxContext,
     ) {
-        let new_score = if (table::contains(&board.scores, &actor)) {
-            let current_ref = table::borrow_mut(&mut board.scores, &actor);
-            let current = *current_ref;
-            let updated = if positive {
-                current + delta
-            } else if delta >= current {
+        let new_score = if (table::contains(&board.scores, user)) {
+            let current = *table::borrow(&board.scores, user);
+            let updated = if (positive) {
+                current + amount
+            } else if (amount >= current) {
                 0
             } else {
-                current - delta
+                current - amount
             };
-            *current_ref = updated;
+            *table::borrow_mut(&mut board.scores, user) = updated;
             updated
         } else {
-            let start = if positive { delta } else { 0 };
-            table::add(&mut board.scores, actor, start);
+            let start = if (positive) { amount } else { 0 };
+            table::add(&mut board.scores, user, start);
+            board.total_users = board.total_users + 1;
             start
         };
 
-        emit_event(actor, delta, positive, new_score);
-    }
-
-    fun emit_event(actor: address, delta: u64, positive: bool, new_score: u64) {
-        let signed_delta: i64 = if positive {
-            delta as i64
-        } else {
-            -1 * (delta as i64)
-        };
-        event::emit(ScoreEvent {
-            actor,
-            delta: signed_delta,
+        event::emit(ScoreUpdated {
+            user,
+            amount,
+            is_positive: positive,
             new_score,
+            epoch: ctx.epoch(),
         });
-    }
-
-    fun is_authority(board: &ScoreBoard, ctx: &TxContext): bool {
-        board.authority == tx_context::sender(ctx)
     }
 }
