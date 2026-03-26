@@ -1,37 +1,145 @@
 # ReputationScore ⭐
 
-A decentralized on-chain trust mechanism built on **OneChain** that tracks user contributions and interactions. Every meaningful action increases a user's credibility, creating a verifiable and transparent trust layer.
+**Decentralized Trust Layer on OneChain — Build, Measure, and Verify Credibility On-Chain**
 
-ReputationScore can power marketplaces, DAOs, and collaborative platforms where trust is essential.
+ReputationScore is a decentralized reputation system that tracks user contributions and interactions directly on-chain. It transforms trust into a transparent, quantifiable, and verifiable metric that can power marketplaces, DAOs, and collaborative ecosystems.
 
----
+## 🌐 Overview
 
-## Deployed Contracts (Testnet)
+Trust is a fundamental component of any system — yet most platforms rely on centralized scoring mechanisms that are opaque, manipulable, and platform-specific.
 
-| Name | Address |
-|------|---------|
-| Package ID | `0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a` |
-| ScoreBoard (shared) | `0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce` |
-| Deploy Transaction | `613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW` |
+ReputationScore introduces a **fully on-chain reputation layer** where credibility is:
 
-- [View Package](https://onescan.cc/testnet/packageDetail?packageId=0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a)
-- [View ScoreBoard](https://onescan.cc/testnet/objectDetails?address=0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce)
-- [View Deploy Tx](https://onescan.cc/testnet/transactionBlocksDetail?digest=613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW)
+* **Transparent** → publicly verifiable by anyone
+* **Immutable** → cannot be altered arbitrarily
+* **Composable** → usable across multiple dApps
+* **User-linked** → tied directly to wallet addresses
 
----
+This creates a universal trust primitive for Web3 applications.
 
-## Features
+## ❗ The Problem
 
-- View on-chain reputation score for any wallet address
-- Tier system: Bronze → Silver → Gold → Platinum
-- Grant reputation to any address (authority action)
-- **AI Reputation Analysis** — toggle to AI Mode to analyze a wallet's transaction history using GPT-4o-mini, generating a score (0–100), letter grade, and breakdown across activity, success rate, and trust level
+* Reputation systems are centralized and opaque
+* Users cannot carry trust across platforms
+* Scores can be manipulated or reset
+* No standardized trust layer in Web3
+* Difficult to evaluate credibility in decentralized systems
 
----
+## 💡 The Solution
 
-## Contract API
+ReputationScore maintains a **shared on-chain ScoreBoard** that tracks reputation points for each wallet.
 
-```move
+Users gain or lose reputation through actions, and their score determines their **trust tier**. This system enables applications to build **trust-aware experiences** without relying on centralized authorities.
+
+## ✨ Key Features
+
+* **On-Chain Reputation Tracking**
+  Store and manage trust scores directly on the blockchain
+
+* **Tier-Based System**
+  Categorize users into Bronze, Silver, Gold, and Platinum tiers
+
+* **Permissioned Reputation Control**
+  Authorities can grant or slash reputation
+
+* **Self-Reported Activity**
+  Users can incrementally build reputation through participation
+
+* **AI-Powered Reputation Analysis**
+  Generate detailed trust reports, scores, and behavioral insights
+
+* **Shared ScoreBoard Object**
+  Centralized logic with decentralized access
+
+## ⚙️ How It Works
+
+1. A shared ScoreBoard object is deployed on-chain
+2. Users interact with the system (self-report or receive grants)
+3. Reputation scores are updated based on actions
+4. Scores determine user tiers and trust level
+5. Frontend displays scores and analytics
+6. AI analyzes activity for deeper insights
+
+## 📦 Deployed Contract
+
+* **Network:** OneChain Testnet
+
+* **Package ID:**
+  `0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a`
+
+* **ScoreBoard Object:**
+  `0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce`
+
+* **Deploy Transaction:**
+  `613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW`
+
+* **Explorer Links:**
+  [https://onescan.cc/testnet/packageDetail?packageId=0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a](https://onescan.cc/testnet/packageDetail?packageId=0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a)
+  [https://onescan.cc/testnet/objectDetails?address=0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce](https://onescan.cc/testnet/objectDetails?address=0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce)
+  [https://onescan.cc/testnet/transactionBlocksDetail?digest=613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW](https://onescan.cc/testnet/transactionBlocksDetail?digest=613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW)
+
+## 🛠 Tech Stack
+
+**Smart Contract**
+
+* Move (OneChain)
+
+**Frontend**
+
+* React
+* TypeScript
+* Vite
+
+**Wallet Integration**
+
+* @mysten/dapp-kit
+
+**AI Integration**
+
+* GPT-4o-mini (reputation analysis & scoring)
+
+**Network**
+
+* OneChain Testnet
+
+## 🔍 Use Cases
+
+* **Decentralized Marketplaces**
+  Evaluate seller and buyer trustworthiness
+
+* **DAO Governance**
+  Weight votes based on reputation
+
+* **Freelancer Platforms**
+  Build verifiable work credibility
+
+* **Social Platforms**
+  Rank users based on contributions
+
+* **Collaborative Ecosystems**
+  Incentivize meaningful participation
+
+## 🚀 Why ReputationScore Stands Out
+
+* **Transparent Trust System** — fully on-chain visibility
+* **Portable Reputation** — usable across multiple dApps
+* **Tamper-Proof Scores** — immutable credibility tracking
+* **AI-Enhanced Analysis** — deeper trust insights
+* **Composable Infrastructure** — plug into any Web3 app
+* **Hackathon-Ready Impact** — solves a core Web3 problem
+
+## 🔮 Future Improvements
+
+* Decentralized reputation validation (multi-signer approvals)
+* Cross-chain reputation aggregation
+* Advanced scoring algorithms
+* ZK-based privacy-preserving reputation
+* Integration with identity systems like ChainProfile
+* Gamified incentives and leaderboards
+
+## ⚙️ Contract API
+
+```move id="7qj2xp"
 // Self-report +1 reputation (any user)
 public fun self_report(board: &mut ScoreBoard, ctx: &mut TxContext)
 
@@ -45,22 +153,22 @@ public fun slash(board: &mut ScoreBoard, user: address, amount: u64, ctx: &mut T
 public fun get_score(board: &ScoreBoard, user: address): u64
 ```
 
----
+## 💻 Local Development
 
-## Local Development
-
-```bash
+```bash id="q9lm2w"
 ~/.cargo/bin/one move build --path contracts
 ~/.cargo/bin/one client publish --gas-budget 50000000 contracts
 cd frontend && npm install && npm run dev
 ```
 
 Set in `frontend/.env`:
-```env
+
+```env id="m2xk9d"
 VITE_PACKAGE_ID=<package_id>
 VITE_SCOREBOARD_ID=<scoreboard_object_id>
 VITE_OPENAI_KEY=<openai_api_key>
 ```
 
-## License
-MIT
+## 📄 License
+
+MIT License
