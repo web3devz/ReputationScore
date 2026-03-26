@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { useCurrentAccount, useSuiClient } from '@mysten/dapp-kit'
-import { PACKAGE_ID, SCOREBOARD_ID, objectUrl } from '../config/network'
+import { SCOREBOARD_ID } from '../config/network'
+import AIScore from './AIScore'
 
 export default function ViewScore() {
   const account = useCurrentAccount()
   const client = useSuiClient()
-  const [score, setScore] = useState<u64 | null>(null)
+  const [score, setScore] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
   const [queryAddr, setQueryAddr] = useState('')
+  const [aiMode, setAiMode] = useState(false)
 
   const getTier = (s: number) => {
     if (s >= 1000) return { name: 'Platinum', class: 'tier-platinum' }
@@ -50,47 +52,65 @@ export default function ViewScore() {
 
   return (
     <div className="card">
-      <div className="card-header">
-        <h2>View Reputation Score</h2>
-        <p className="card-desc">Check your on-chain reputation or look up any address.</p>
+      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h2>View Reputation Score</h2>
+          <p className="card-desc">Check on-chain reputation or run an AI analysis.</p>
+        </div>
+        <div className="ai-toggle-wrap">
+          <span className="ai-toggle-label">{aiMode ? '🤖 AI Mode' : '⛓ Chain Mode'}</span>
+          <button
+            className={`ai-toggle ${aiMode ? 'on' : ''}`}
+            onClick={() => setAiMode(!aiMode)}
+            title="Switch between on-chain score and AI analysis"
+          >
+            <span className="ai-toggle-knob" />
+          </button>
+        </div>
       </div>
 
-      <div className="search-row">
-        <input
-          value={queryAddr}
-          onChange={(e) => setQueryAddr(e.target.value)}
-          placeholder="0x address (leave blank for your score)"
-          onKeyDown={(e) => e.key === 'Enter' && lookup()}
-        />
-        <button className="btn-primary" onClick={() => lookup()} disabled={loading}>
-          {loading ? 'Loading...' : 'Look Up'}
-        </button>
-      </div>
-
-      {error && <p className="error">⚠ {error}</p>}
-
-      {searched && score !== null && (
-        <div className="score-display">
-          <div className="score-big">{score}</div>
-          <div className="score-label">Reputation Points</div>
-          {(() => {
-            const tier = getTier(score)
-            return tier.class ? <div className={`score-tier ${tier.class}`}>{tier.name}</div> : null
-          })()}
-          {myScore && (
-            <button className="btn-ghost" onClick={() => lookup(account?.address)}>
-              ↻ Refresh My Score
+      {aiMode ? (
+        <AIScore address={queryAddr || account?.address || ''} />
+      ) : (
+        <>
+          <div className="search-row">
+            <input
+              value={queryAddr}
+              onChange={(e) => setQueryAddr(e.target.value)}
+              placeholder="0x address (leave blank for your score)"
+              onKeyDown={(e) => e.key === 'Enter' && lookup()}
+            />
+            <button className="btn-primary" onClick={() => lookup()} disabled={loading}>
+              {loading ? 'Loading...' : 'Look Up'}
             </button>
-          )}
-        </div>
-      )}
+          </div>
 
-      {searched && score === null && !error && (
-        <div className="empty-state">
-          <div className="empty-icon">🔍</div>
-          <h3>No score found</h3>
-          <p>This address hasn't earned any reputation yet.</p>
-        </div>
+          {error && <p className="error">⚠ {error}</p>}
+
+          {searched && score !== null && (
+            <div className="score-display">
+              <div className="score-big">{score}</div>
+              <div className="score-label">Reputation Points</div>
+              {(() => {
+                const tier = getTier(score)
+                return tier.class ? <div className={`score-tier ${tier.class}`}>{tier.name}</div> : null
+              })()}
+              {myScore && (
+                <button className="btn-ghost" onClick={() => lookup(account?.address)}>
+                  ↻ Refresh My Score
+                </button>
+              )}
+            </div>
+          )}
+
+          {searched && score === null && !error && (
+            <div className="empty-state">
+              <div className="empty-icon">🔍</div>
+              <h3>No score found</h3>
+              <p>This address hasn't earned any reputation yet.</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
