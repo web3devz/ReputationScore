@@ -14,7 +14,7 @@ ReputationScore can power marketplaces, DAOs, and collaborative platforms where 
 | ScoreBoard (shared) | `0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce` |
 | Deploy Transaction | `613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW` |
 
-- [View Package](https://onescan.cc/testnet/objectDetails?address=0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a)
+- [View Package](https://onescan.cc/testnet/packageDetail?packageId=0x722a42b32d71cdd3c293c1ffbe7b3667fb5d4b4193e5b4552f13de093bfd3b0a)
 - [View ScoreBoard](https://onescan.cc/testnet/objectDetails?address=0xa1c692919c6c2e75a1c932a9322f88233a1e255bef14ddfdafeb21d995470dce)
 - [View Deploy Tx](https://onescan.cc/testnet/transactionBlocksDetail?digest=613W2yHWTxHxtz7YJ822FxkV2sbtNKub2Ab1vX1AtshW)
 
